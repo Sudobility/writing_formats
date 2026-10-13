@@ -13,8 +13,11 @@ browser, Bun and React Native.
 | Fountain (§4.5) | `importFountain(text, opts)` | `exportFountain(doc, opts)` |
 | Final Draft `.fdx` (§4.4) | `importFdx(xml, opts)` | `exportFdx(doc)` |
 | Fade In `.fadein` (§4.2) | `importFadeIn(bytes \| xml, opts)` | not implemented |
+| Plain text `.txt` | `importText(text, opts)` | not implemented |
 
-Also `detectFormat(bytes | string, filename?)` (sniffing, §2.5), `importAny`, `exportAs`, `FORMATS`.
+`importText` is **smart plain-text import**: a screenplay typed or exported as ordinary text (no Fountain markup), where element type is guessed from how the text is *formatted* — indentation, ALL-CAPS cues, the INT./EXT. slug, parenthesis shape and transition wording. It handles indented industry-standard exports, flat left-aligned scripts with blank lines, and text copied from a PDF (strips page numbers and CONTINUED/MORE markers, flanking scene numbers, `(CONT'D)` cue suffixes), and — unlike Fountain, which keeps every physical line — **reflows wrapped lines of the same element into one paragraph** (the whole reason to import `.txt` rather than treat each line as an element). Everything is heuristic: the report carries a `confidence` and the editor's style tools are the fix-up path. `importAny` routes any `.txt` *file* here (even when its content scores as Fountain, so wrapped lines still reflow); explicit `.fountain`/`.spmd` files keep the strict Fountain parser.
+
+Also `detectFormat(bytes | string, filename?)` (sniffing, §2.5; now refuses binary content — NUL/control/replacement-char heavy — as `format: null` instead of letting it fall through to `txt`), `importAny`, `exportAs`, `FORMATS`.
 Every function returns a `ConversionReport` (§3.1): `diagnostics[]` (`info | warn | loss | error`, stable `code`,
 `feature`, `count`), `stats`, `summary`. Only a wrong-format input throws (`FormatError`); unsupported features warn.
 
@@ -27,7 +30,7 @@ Every function returns a `ConversionReport` (§3.1): `diagnostics[]` (`info | wa
 - `src/shared/read.ts` — `DocReader` (role/all-caps lookups for exporters) and `scanExportLosses`.
 - `src/shared/xml.ts` — `fast-xml-parser` wrapped into a DOM-free `XNode` tree; DOCTYPE stripped (no entity expansion).
 - `src/fountain/` — `classify.ts` (shared reader/writer block classifier), `inline.ts` (emphasis), `import.ts`, `export.ts`. `classify.ts` is genuinely dependency-free, so `package.json` also exposes it as its own `./fountain-classify` subpath export (`writing_ui`'s live-document paste classifier imports just that, without pulling in this package's `fast-xml-parser`/`fflate` FDX/.fadein dependencies).
-- `src/fdx/`, `src/fadein/` — one `import.ts`/`export.ts` each. `src/detect.ts`, `src/registry.ts`.
+- `src/fdx/`, `src/fadein/` — one `import.ts`/`export.ts` each. `src/txt/import.ts` — `importText` (smart plain-text; reuses `classify.ts`'s `HEADING_RE`/`isAllCapsLine`). `src/detect.ts`, `src/registry.ts`.
 - `src/test-support/helpers.ts` — `elementSequence`, `validate` (materialize + `validateDocument`), `layoutPages`.
 
 ## Commands

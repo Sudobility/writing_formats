@@ -198,7 +198,7 @@ export class DocBuilder {
     };
   }
 
-  finish(importMeta: { source: 'fountain' | 'fdx' | 'fadein'; fileName?: string; version?: number; fdxVersion?: string; unknown?: Record<string, never> | Record<string, unknown> }): DocumentJSON {
+  finish(importMeta: { source: 'fountain' | 'fdx' | 'fadein' | 'txt'; fileName?: string; version?: number; fdxVersion?: string; unknown?: Record<string, never> | Record<string, unknown> }): DocumentJSON {
     // Numbers are all-or-nothing on a page; a script with only some headings numbered keeps them stored but not displayed.
     const headings = this.json.elements.filter((e) => this.roleOfStyle(e.style) === 'sceneHeading');
     if (headings.length > 0 && headings.every((e) => e.num)) this.enableSceneNumbers();

@@ -22,6 +22,25 @@ function extOf(name?: string): FormatId | undefined {
   return m ? EXT[m[1]!.toLowerCase()] : undefined;
 }
 
+/**
+ * True when the decoded text is almost certainly binary, not a plain-text document. UTF-8 decoding of
+ * binary data yields NUL bytes, C0/C1 control characters and the replacement character (U+FFFD); real
+ * text has essentially none of those (tab/newline/CR/FF/VT excepted). Without this, random bytes or an
+ * unrecognised binary file would fall through to the `txt` branch below and be "imported" as a document.
+ */
+function looksBinary(text: string): boolean {
+  const sample = text.slice(0, 4096);
+  if (sample.length === 0) return false;
+  let bad = 0;
+  for (let i = 0; i < sample.length; i++) {
+    const c = sample.charCodeAt(i);
+    if (c === 0) return true; // a NUL byte settles it
+    // C0 controls except \t \n \v \f \r (0x09–0x0d), plus DEL and the Unicode replacement char.
+    if (c < 0x09 || (c > 0x0d && c < 0x20) || c === 0x7f || c === 0xfffd) bad++;
+  }
+  return bad / sample.length > 0.1;
+}
+
 /** Spec 04 §4.5.8, thin: the fraction of blocks that read as something other than action, plus title page and heading bonuses. */
 export function fountainScore(text: string): number {
   const head = text.replace(/^﻿/, '').replace(/\r\n?/g, '\n').split('\n').slice(0, 200).join('\n');
@@ -69,6 +88,7 @@ export function detectFormat(input: Uint8Array | string, filename?: string): Det
   if (/<document[^>]*Open Screenplay Format/i.test(lead)) return done('fadein', 1);
   if (/^<(!DOCTYPE html|html)/i.test(lead)) return done('html', 0.9);
   if (/\.(fdr|fdt|fcf|mmsw)$/i.test(filename ?? '')) return done(null, 0, { unsupported: 'Binary Final Draft and Movie Magic files are not supported; save as .fdx or PDF.' });
+  if (looksBinary(t)) return done(null, 0);
 
   const score = fountainScore(t) + (byName === 'fountain' ? 0.3 : 0);
   const fountain: DetectCandidate = { format: 'fountain', confidence: Math.min(1, score) };

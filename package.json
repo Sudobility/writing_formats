@@ -1,6 +1,6 @@
 {
   "name": "@sudobility/writing_formats",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "File-format import/export for Fadewright: Fountain, Final Draft (.fdx) and Fade In (.fadein) to and from writing_core's DocumentJSON, with conversion reports",
   "type": "module",
   "main": "./dist/index.js",
