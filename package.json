@@ -1,6 +1,6 @@
 {
   "name": "@sudobility/writing_formats",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "File-format import/export for Fadewright: Fountain, Final Draft (.fdx) and Fade In (.fadein) to and from writing_core's DocumentJSON, with conversion reports",
   "type": "module",
   "main": "./dist/index.js",
@@ -25,12 +25,22 @@
     "verify": "bun run typecheck && bun run test:unit && bun run build",
     "prepublishOnly": "bun run clean && bun run verify"
   },
-  "files": ["dist/**/*", "CLAUDE.md"],
-  "keywords": ["screenwriting", "fountain", "fdx", "final-draft", "fade-in", "fadewright"],
+  "files": [
+    "dist/**/*",
+    "CLAUDE.md"
+  ],
+  "keywords": [
+    "screenwriting",
+    "fountain",
+    "fdx",
+    "final-draft",
+    "fade-in",
+    "fadewright"
+  ],
   "author": "Sudobility",
   "license": "BUSL-1.1",
   "dependencies": {
-    "@sudobility/writing_core": "^0.1.4",
+    "@sudobility/writing_core": "^0.1.5",
     "fast-xml-parser": "^5.11.1",
     "fflate": "^0.8.2"
   },
@@ -45,6 +55,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/johnqh/writing_formats.git"
+    "url": "https://github.com/Sudobility/writing_formats.git"
   }
 }
