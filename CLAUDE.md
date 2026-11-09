@@ -1,6 +1,10 @@
 # @sudobility/writing_formats
 
-> **Git policy.** Commit on `main`. Speed mode: local packages only, no npm publishing, no version bumps, no workflows.
+> **Publishing.** Commit on `main`. Published to **GitHub Packages** (`@sudobility` scope, `.npmrc` routes it;
+> auth from `~/.npmrc`). `.github/workflows/ci-cd.yml` runs typecheck/test/build and publishes on push to
+> `main`/`develop` (`publish-target: github`). Version bumps and `writing_core` updates are committed together
+> (see git log). During the local-packages phase `writing_core` is still resolved from the sibling checkout for
+> dev/test (see Commands); the real emit (`bun run build`) uses the published dependency instead.
 
 File-format import/export for Fadewright. Converts between script files and `writing_core`'s plain
 `DocumentJSON`. Platform-free (bytes/strings in and out; no Node built-ins, no DOM) so it runs in the
@@ -35,10 +39,15 @@ Every function returns a `ConversionReport` (§3.1): `diagnostics[]` (`info | wa
 
 ## Commands
 
-- `bunx tsc --noEmit` (or `bun run typecheck`) — the ONLY compile command. `noEmit` is set; never run an emitting `tsc` here:
-  `writing_core` resolves by path and an emitting compile once wrote 430 `.js` files into `writing_core/src`.
-- `bunx vitest run` (never `bun test`). The `.fadein` tests read two private scripts from `~/projects/writing/`, skip when absent, and
-  print counts only. Never copy, commit or print those files' text.
+- `bun install` first (no `node_modules` on a fresh checkout; needs `~/.npmrc` auth for the `@sudobility` scope).
+- `bun run typecheck` (= `tsc --noEmit`, base config) — the dev typecheck. Never run a **bare emitting** `tsc`: the
+  base `tsconfig.json` has `noEmit` AND `paths` pointing at `writing_core`'s sibling source, and an emitting compile
+  once wrote 430 `.js` files into `writing_core/src`.
+- `bun run build` (= `tsc -p tsconfig.esm.json`) — the ONLY safe emit. That build config clears `paths`, sets
+  `rootDir: src` and resolves `writing_core` from `node_modules`, emitting `dist/` for publish.
+- `bun run test:unit` (= `vitest run`; never `bun test`). The `.fadein` tests read two private scripts from a local
+  path (`src/fadein/fadein.test.ts`), skip when absent, and print counts only. Never copy, commit or print their text.
+- `bun run verify` = typecheck + test:unit + build. No lint step is configured.
 
 ## Patterns
 
@@ -59,7 +68,7 @@ Every function returns a `ConversionReport` (§3.1): `diagnostics[]` (`info | wa
 - Fountain export uppercases all-caps styles' body text but NOT title page values; forced `!`/`@`/`.`/`>` are added by running the
   reader's own `classifyBlock` on the output.
 
-## Known gaps (speed mode)
+## Known gaps
 
 Not imported/exported, each reported as a warning or loss: revisions, track changes, locked pages/scenes, tags, alternates, images,
 headers/footers, watermarks, macros, SmartType lists (harvest rebuilds them), FDX `ElementSettings` and page layout, range/unanchored

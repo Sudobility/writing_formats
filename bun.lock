@@ -5,7 +5,7 @@
     "": {
       "name": "@sudobility/writing_formats",
       "dependencies": {
-        "@sudobility/writing_core": "^0.1.6",
+        "@sudobility/writing_core": "^0.1.7",
         "fast-xml-parser": "~5.11.1",
         "fflate": "~0.8.3",
       },
@@ -60,7 +60,7 @@
 
     "@standard-schema/spec": ["@standard-schema/spec@1.1.0", "", {}, "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w=="],
 
-    "@sudobility/writing_core": ["@sudobility/writing_core@0.1.6", "https://npm.pkg.github.com/download/@sudobility/writing_core/0.1.6/e55777a47ea4c2abcbf1a953b92185eebdff9a5b", { "dependencies": { "@noble/hashes": "~2.4.0", "harfbuzzjs": "1.6.1", "yjs": "~13.6.32", "zod": "~4.6.5" } }, "sha512-WgSLVKAJTKc7Is/ooSwrj7LSkGs3i+HtkWHth93crqe/r/SN5GGY2SpmTwO89uI8IhTvckjYDfYSc14RF55STg=="],
+    "@sudobility/writing_core": ["@sudobility/writing_core@0.1.7", "https://npm.pkg.github.com/download/@sudobility/writing_core/0.1.7/11a47c4e9d73cb491c127e3cf3bc957463e5abf3", { "dependencies": { "@noble/hashes": "~2.4.0", "harfbuzzjs": "1.6.1", "yjs": "~13.6.32", "zod": "~4.6.5" } }, "sha512-a3cK1TvVXLyJSrMgvWLFRTNLw+EGfL61wquc9Ny5AHVc8a68JhoIDYSWZr0c/ttvI+0/t/i5hHEM3eJgoVCWpg=="],
 
     "@types/chai": ["@types/chai@5.2.3", "", { "dependencies": { "@types/deep-eql": "*", "assertion-error": "^2.0.1" } }, "sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA=="],
 
